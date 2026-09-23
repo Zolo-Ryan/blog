@@ -1,9 +1,20 @@
 ## hi
 
 export const currentYear = new Date().getFullYear();
+import Image from 'next/image';
+import Youtube from '../app/components/Youtube';
+import EncryptedText from '../app/components/EncryptedText';
 
 The current year is {currentYear}.
 
 Two plus two equals {2 + 2}.
 
 ### Warning!
+
+<Image src="/image.png" alt="Image" width={400} height={300} />
+
+![Hola](/image.png "YOU")
+
+<Youtube id="widZEAJc0QM" />
+
+<EncryptedText text="HOHOHOH" />
