@@ -9,7 +9,7 @@ export default async function Home() {
       <ul>
         {files.map((fileName,i) =>{
           return(
-            <Link href={`blog/${fileName}`} key={i}>
+            <Link href={`/${fileName.split('.')[0]}`} key={i}>
               <li>{fileName}</li>
             </Link>
           )

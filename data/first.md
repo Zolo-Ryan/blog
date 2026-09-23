@@ -20,4 +20,6 @@ steps:
 
 [ho](javascript:alert("HI:"))
 
-![alt text](/image.png =30x20){width=300px height=200px}
+![alt text](/image.png)
+
+::image[alt text]{/image.png}
