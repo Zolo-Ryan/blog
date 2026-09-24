@@ -3,8 +3,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+type Post = {
+  slug: string;
+  title: string;
+  date: string;
+};
+
 export default function Sidebar() {
-  const [posts, setPosts] = useState<string[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -18,7 +24,9 @@ export default function Sidebar() {
   if (query.trim()) {
     try {
       const regex = new RegExp(query, "i");
-      filteredPosts = posts.filter((slug) => regex.test(slug));
+      filteredPosts = posts.filter(
+        (post) => regex.test(post.slug) || regex.test(post.title)
+      );
     } catch {
       filteredPosts = [];
     }
@@ -74,32 +82,54 @@ export default function Sidebar() {
           gap: "0.5rem",
         }}
       >
-        {filteredPosts.map((slug) => (
-          <li key={slug}>
-            <Link
-              href={`/blog/${slug}`}
-              style={{
-                textDecoration: "none",
-                color: "#111827",
-                display: "block",
-                padding: "0.35rem 0.5rem",
-                borderRadius: "0.4rem",
-                border: "1px solid transparent",
-                transition: "all 0.15s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.border = "1px solid rgba(17, 24, 39, 0.12)";
-                e.currentTarget.style.background = "rgba(17, 24, 39, 0.02)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.border = "1px solid transparent";
-                e.currentTarget.style.background = "transparent";
-              }}
-            >
-              {slug}
-            </Link>
-          </li>
-        ))}
+        {filteredPosts.map((post) => {
+          const formattedDate = post.date
+            ? new Date(post.date).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })
+            : "";
+
+          return (
+            <li key={post.slug}>
+              <Link
+                href={`/blog/${post.slug}`}
+                style={{
+                  textDecoration: "none",
+                  color: "#111827",
+                  display: "block",
+                  padding: "0.35rem 0.5rem",
+                  borderRadius: "0.4rem",
+                  border: "1px solid transparent",
+                  transition: "all 0.15s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.border = "1px solid rgba(17, 24, 39, 0.12)";
+                  e.currentTarget.style.background = "rgba(17, 24, 39, 0.02)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.border = "1px solid transparent";
+                  e.currentTarget.style.background = "transparent";
+                }}
+              >
+                <div style={{ fontWeight: 600 }}>{post.title}</div>
+                {formattedDate ? (
+                  <div
+                    style={{
+                      marginTop: "0.15rem",
+                      fontSize: "0.7rem",
+                      color: "#6b7280",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {formattedDate}
+                  </div>
+                ) : null}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );
