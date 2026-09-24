@@ -77,7 +77,7 @@ export default function Sidebar() {
         {filteredPosts.map((slug) => (
           <li key={slug}>
             <Link
-              href={`/${slug}`}
+              href={`/blog/${slug}`}
               style={{
                 textDecoration: "none",
                 color: "#111827",

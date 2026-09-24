@@ -1,10 +1,18 @@
-import { returnPagesContents } from "@/utils/io";
+import { promises as fs } from "node:fs";
+import path from "node:path";
 
 export async function GET() {
-  const posts = returnPagesContents()
-    .filter((fileName) => fileName.endsWith(".mdx") || fileName.endsWith(".md"))
-    .map((fileName) => fileName.replace(/\.(mdx|md)$/i, ""))
-    .sort();
+  const blogDir = path.join(process.cwd(), "app", "blog");
 
-  return Response.json({ posts });
+  try {
+    const entries = await fs.readdir(blogDir, { withFileTypes: true });
+    const posts = entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+
+    return Response.json({ posts });
+  } catch {
+    return Response.json({ posts: [] });
+  }
 }
