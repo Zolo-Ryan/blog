@@ -1,21 +1,30 @@
-import { returnDataContents } from "@/utils/io";
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default async function Sidebar() {
+export default function Sidebar() {
+  const [posts, setPosts] = useState<string[]>([]);
 
-    const files = await returnDataContents();
+  useEffect(() => {
+    fetch("/api/posts")
+      .then((res) => res.json())
+      .then((data) => setPosts(data.posts ?? []))
+      .catch(() => setPosts([]));
+  }, []);
 
-    return (
-        <div>
-            <ul>
-                {files.map((fileName, i) => {
-                    return (
-                        <Link href={`/${fileName.split('.')[0]}`} key={i}>
-                            <li>{fileName}</li>
-                        </Link>
-                    )
-                })}
-            </ul>
-        </div>
-    );
+  return (
+    <nav aria-label="Blog sidebar">
+      <h2 style={{ margin: "0 0 1rem", fontSize: "1.1rem" }}>Posts</h2>
+      <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "0.5rem" }}>
+        {posts.map((slug) => (
+          <li key={slug}>
+            <Link href={`/${slug}`} style={{ textDecoration: "none", color: "inherit" }}>
+              {slug}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
 }

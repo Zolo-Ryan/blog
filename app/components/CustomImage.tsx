@@ -14,19 +14,19 @@ export default function CustomImage({
     switch(type) {
         case 'big':
             height = height || 400;
-            width = width || 400;
+            width = width || 600;
             break;
         case 'medium':
             height = height || 200;
-            width = width || 200;
+            width = width || 300;
             break;
         case 'small':
             height = height || 100;
-            width = width || 100;
+            width = width || 166;
             break;
         default:
             height = height || 300;
-            width = width || 300;
+            width = width || 450;
     }
 
     return (
