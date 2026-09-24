@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function Sidebar() {
   const [posts, setPosts] = useState<string[]>([]);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     fetch("/api/posts")
@@ -12,6 +13,16 @@ export default function Sidebar() {
       .then((data) => setPosts(data.posts ?? []))
       .catch(() => setPosts([]));
   }, []);
+
+  let filteredPosts = posts;
+  if (query.trim()) {
+    try {
+      const regex = new RegExp(query, "i");
+      filteredPosts = posts.filter((slug) => regex.test(slug));
+    } catch {
+      filteredPosts = [];
+    }
+  }
 
   return (
     <nav aria-label="Blog sidebar" style={{ fontSize: "0.9rem" }}>
@@ -26,6 +37,34 @@ export default function Sidebar() {
       >
         entries
       </div>
+
+      <div style={{ marginBottom: "0.8rem" }}>
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="/regex/"
+          aria-label="Filter blog entries by regex"
+          style={{
+            width: "100%",
+            border: "1px solid rgba(17, 24, 39, 0.12)",
+            borderRadius: "0.45rem",
+            background: "rgba(255,255,255,0.45)",
+            color: "#111827",
+            padding: "0.45rem 0.55rem",
+            fontSize: "0.8rem",
+            fontFamily: "inherit",
+            outline: "none",
+          }}
+        />
+      </div>
+
+      {query.trim() && !filteredPosts.length ? (
+        <div style={{ fontSize: "0.72rem", color: "#6b7280", marginBottom: "0.7rem" }}>
+          no matches
+        </div>
+      ) : null}
+
       <ul
         style={{
           listStyle: "none",
@@ -35,7 +74,7 @@ export default function Sidebar() {
           gap: "0.5rem",
         }}
       >
-        {posts.map((slug) => (
+        {filteredPosts.map((slug) => (
           <li key={slug}>
             <Link
               href={`/${slug}`}
