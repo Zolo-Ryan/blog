@@ -8,10 +8,8 @@ const components: MDXComponents = {
   img: (props) => (
     <Image
       sizes="100vw"
-      width={100}
-      height={100}
-      placeholder="blur"
-      blurDataURL="..."
+      width={450}
+      height={300}
       {...(props as ImageProps)}
     />
   ),

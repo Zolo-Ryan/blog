@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import Sidebar from "./Sidebar";
 
 type ParentProps = {
@@ -7,7 +8,7 @@ type ParentProps = {
 
 export default function Parent({ children }: ParentProps) {
   return (
-    <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    <div style={{ width: "1200px", margin: "0 auto" }}>
       <div
         style={{
           borderBottom: "1px solid rgba(17, 24, 39, 0.12)",
@@ -59,7 +60,7 @@ export default function Parent({ children }: ParentProps) {
               >
                 ~/blog
               </div>
-              <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700 }}>zolo</h1>
+              <Link href="/"><h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700 }}>zolo</h1></Link>
             </div>
             <Sidebar />
           </div>
