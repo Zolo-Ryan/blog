@@ -1,0 +1,107 @@
+---
+title: 'Fast Exponentiation'
+date: '2026-09-27'
+---
+
+# Fast Exponentiation & Fermat's Little Theorem
+
+Today I learned about fast exponentiation and Fermat's Little Theorem.
+This happend while I was trying to solve CSES [Exponentiation](https://cses.fi/problemset/task/1095) and [Exponentiation II](https://cses.fi/problemset/task/1712) problems.
+
+## Exponentiation
+
+This was a simple problem related to calculating a^b mod m.
+Where m is `10^9 + 7` and a, b are integers.
+
+You will see that the given mod value is very common and used a lot in the competitive programming. 
+**Why?** Because it a prime number and it is less than `2^31` which is the maximum value of a signed integer.
+
+These two criteria I found out on the Geeks for Geeks:
+![Mod value](/gfg_exponent_mod.png)
+
+Now coming back to the topic of Fast exponentiation.
+
+The logic is simple
+
+```python
+fast_exponentiation(base,power):
+    if power is 0:
+        return 1;
+    if power is odd:
+        return base * fast_exponentiation(base, power - 1);
+    if power is even:
+        return fast_exponentiation(base * base, power / 2);
+```
+
+Think like this:
+
+```
+if b is odd
+a ^ b -> a * (a ^ (b - 1))
+if b is even
+a ^ b -> a ^ (2 * c) -> (a * a) ^ c where c = b/2
+```
+
+Now based on the above intuition and the recursive formula we will write the iterative formula, since recursion is slow as compared to iterative approach, which is required for cses problem solving.
+
+The iterative approach is like this:
+
+```py
+
+fast_exponentiation (base, power):
+    val = 1
+    while power > 0:
+        if power is odd:
+            val *= base
+        
+        base *= base
+        power //= 2
+    return val
+```
+
+Think it like this:
+
+Power in binary looks like this -> 10111001
+
+Now we have a `val` variable that will store the final value and one `base` variable. As we can see from the recursive solution. The final return statement is doing `base * fast_factorial`. Then the next recursive step will add the `base * base` to the result and cut the `power by 2`, deeper in the tree. In case of even power we are doing the same `base * base`, so the above loop makes sense.
+
+## Exponentiation II
+
+Now the problem becomes little tricky. Instead of `a^b`, now we are required to solve for `a^b^c` and we need the result to be `mod by m`. Here the m is `1_000_000_007` just like always.
+
+Now the `Fermant's Little Theorem` comes into picture.
+
+### Fermat's Little Theorem
+
+It states that:
+
+```py
+if p is prime:
+    if a belongs to integers:
+        a ^ p ≡ a (mod p) # ( a ^ p - a ) % p = 0
+    if a is not divisible by p:
+        a ^ (p - 1) ≡ 1 (mod p) # ( a ^ (p - 1) - 1 ) % p = 0
+```
+
+```py
+assume b ^ c = q(M - 1) + r where r = (b ^ c) % (M - 1)
+then a ^ (b ^ c) = a ^ (q(M - 1) + r) = a ^ (q(M - 1)) * a ^ r
+
+now we will find a ^ b ^ c mod M
+a ^ (b ^ c) mod M = a ^ (q(M - 1) + r) mod M = a ^ (q(M - 1)) * a ^ r mod M
+now a ^ (q(M - 1)) mod M = 1 (from Fermat's Little Theorem)
+so a ^ (b ^ c) mod M = a ^ r mod M 
+where r = (b ^ c) % (M - 1)
+
+so we finally get a ^ (b ^ c) mod M = a ^ ((b ^ c) % (M - 1)) mod M
+
+which implies a ^ b ^ c ≡ a ^ ((b ^ c) % (M - 1)) mod M
+```
+
+What about a ^ b ^ c ^ d mod M? Now, the we might assume that the mod becomes M - 2, but no. That can't happen because Fermat's little theorem wants the power to be a `prime` number, however M - 1 is not a prime number. So we can't use Fermat's little theorem here.
+
+
+#### Further read: 
+- [Fermat's Little Theorem](https://en.wikipedia.org/wiki/Fermat%27s_little_theorem)
+- [Euler's Totient Function](https://www.geeksforgeeks.org/dsa/eulers-totient-function/)
+- [Euler's Theorem](https://en.wikipedia.org/wiki/Euler%27s_theorem)

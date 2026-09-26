@@ -52,7 +52,7 @@ async function collectNodes(dir: string, relativePath: string[] = []): Promise<B
   const entries = await fs.readdir(dir, { withFileTypes: true });
   const results: BlogNode[] = [];
 
-  const pageFile = entries.find((entry) => entry.isFile() && entry.name === "page.mdx");
+  const pageFile = entries.find((entry) => entry.isFile() && (entry.name === "page.mdx" || entry.name === "page.md"));
   const childDirs = entries.filter((entry) => entry.isDirectory());
 
   if (pageFile) {
