@@ -1,0 +1,112 @@
+---
+title: 'Longest Increasing Subsequence'
+date: '2026-10-23'
+---
+
+# Longest Increasing Subsequence
+
+This problem is from cses: [Longest Increasing Subsequence](https://cses.fi/problemset/task/1145)
+
+![alt text](/lis.png)
+
+## How to solve?
+
+### The Recursive Approach
+
+For each element, calculate the lis considering the previous elements as a sub array iteratively as follows:
+    if the current element is > for any element in the sub array:
+        do lis[current_element] = lis[smaller_element] + 1
+
+```py
+lis(arr,idx):
+    if idx == 0:
+        return 1
+    maxLis = 1
+
+    Iterate from i = 0 to i < idx:
+        if arr[i] < arr[idx]:
+            beforeLis = lis(arr,i)
+            maxLis = max(maxLis,beforeLis + 1)
+
+    return maxLis
+```
+
+Here as you can see there are chances of StackOverflow and the confirmity of Time limit exceed. (This is exponential time complexity)
+
+Now we will improve this with Memoization
+
+### The Memoization Approach
+
+```py
+lis(arr,idx,dp):
+    if idx == 0:
+        return 1
+    
+    if dp[idx] != -1:
+        return dp[idx]
+    maxLis = 1
+
+    for i = 0 to i < idx:
+        if arr[i] < arr[idx]:
+            beforeLis = lis(arr,i)
+            maxLis = max(maxLis,beforeLis + 1)
+    
+    return dp[idx] = maxLis
+```
+
+Much better approach, Now we have come from exponential approach to n^2 approach.
+
+### The Optimized Approach
+
+This problem is solved by dp in O(n2) but that is not optimal. It can further be reduced to O(nlogn) using `Binary Search`.
+
+The approach is as follows:
+
+```py
+Insert the first element in to a queue/ArrayList
+Iterate the array from second element:
+    if the element is > than the last element in the ArrayList:
+        Append the element to the list.
+    else:
+        find the element in the List that is just larger than the current element and replace it with this new value.
+
+To find the element just larger than the current element just use binary search since the List will be sorted.
+```
+
+Here is the java solution for your reference:
+
+```java
+    public static int binarySearchOptimalSolution(int[] arr){
+        ArrayList<Integer> bucket = new ArrayList<>();
+        bucket.add(arr[0]);
+        int ans = 1;
+        for(int i = 1; i < arr.length; i++){
+            if(bucket.get(bucket.size() - 1) < arr[i]){
+                bucket.add(arr[i]);
+                ans = Math.max(ans, bucket.size());
+            } else {
+                int idx = findPositionJustLargest(bucket,arr[i]);
+                bucket.set(idx,arr[i]);
+            }
+        }
+        return ans;
+    }
+    public static int findPositionJustLargest(ArrayList<Integer> bucket, int value){
+        int low = 0;
+        int high = bucket.size() - 1;
+        while(low < high){
+            int mid = low + (high - low)/2;
+            if(bucket.get(mid) >= value){
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+```
+
+## References
+
+- [Increasing Sequence GFG](https://www.geeksforgeeks.org/dsa/longest-increasing-subsequence-dp-3/)
+- [Projects CSES](https://cses.fi/problemset/task/1140/)
